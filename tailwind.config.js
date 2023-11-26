@@ -13,11 +13,11 @@ module.exports = {
       extend: {
           colors: {
               'dvx-white': '#E9E2DB',
-              'dvx-mainback': '#5a3e3e',
+              'dvx-mainback': '#010101',
               'dvx-back': '#312525',
               'dvx-orange': '#E2A86E',
               'dvx-accent': '#F88224',
-              'dvx-border': '#5C3A3B',
+              'dvx-border': '#00ff18',
               'dvx-box': '#121212'
           },
       },

@@ -1,147 +1,55 @@
 @()(implicit lang: Lang, flash: Flash, req: RequestHeader)
-@import library.FormatDate
+    @import library.FormatDate
 
 <!doctype html>
-<html lang="en" class="text-dvx-white bg-dvx-mainback font-sans-serif">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>CFP @Messages("CONF.title")</title>
-        <meta name="generator" content="Play! 2.3 Scala"/>
-        <link rel="shortcut icon" href="@routes.Assets.at(path = "/public", file = "images/favicon.ico")">
+    <html lang="en" class="text-dvx-white bg-dvx-mainback font-sans-serif">
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>CFP @Messages("CONF.title")</title>
+            <meta name="generator" content="Play! 2.3 Scala"/>
+            <link rel="shortcut icon" href="@routes.Assets.at(path = "/public", file = "images/favicon.ico")">
 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Aldrich&Big+Shoulders+Inline+Display">
-        <link rel="stylesheet" type="text/css" href="@routes.Assets.at(path = "/public", file = "devoxx_fr_2023/devoxx_fr_2023.css")">
-        <script src="//code.jquery.com/jquery-3.6.0.min.js" type="text/javascript" charset="utf8" ></script>
-        <script src="//kit.fontawesome.com/6cd398e38d.js" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <section class="bg-dvx-back">
-            <div class="container mx-auto py-2 lg:py-4">
-                <a href="https://www.devoxx.fr"><h1>DEVOX<span class="text-dvx-accent">X</span> <span class="text-white text-uppercase">France</span></h1></a>
-            </div>
-        </section>
-
-        <section class="bg-fixed bg-clip-content bg-center bg-cover bg-no-repeat md:mb-8 sm:mb-2" style="background-image: url('/assets/devoxx_fr_2023/devoxx_fr_call_for_paper_2023.jpeg')">
-            <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
-                <div class="mr-auto place-self-center lg:col-span-7 bg-gradient-to-b bg-dvx-mainback p-4">
-
-                    <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl bg-clip-text text-transparent bg-gradient-to-bl from-yellow-100 to-orange-700">@Messages("appel.conf")</h1>
-                    <p class="max-w-2xl mb-6 font-light text-black-200 lg:mb-8 md:text-lg lg:text-xl">11ème édition - du 12 au 14 avril 2023</p>
-                    @if(ConferenceDescriptor.isCFPOpen) {
-                        <h2>@Messages("cfp.isOpen")</h2>
-                        <a href="@routes.Application.home()" class="btn-primary inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
-                            <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                            &nbsp;@Messages("cfp.open.enter")
-                        </a>
-                    } else {
-                        <h2>@Messages("cfp.isClosed")</h2>
-                    }
-
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Aldrich&Big+Shoulders+Inline+Display">
+            <link rel="stylesheet" type="text/css" href="@routes.Assets.at(path = "/public", file = "devoxx_fr_2023/devoxx_fr_2023.css")">
+            <script src="//code.jquery.com/jquery-3.6.0.min.js" type="text/javascript" charset="utf8" ></script>
+            <script src="//kit.fontawesome.com/6cd398e38d.js" crossorigin="anonymous"></script>
+        </head>
+        <body>
+            <section class="bg-dvx-back">
+                <div class="container mx-auto py-2 lg:py-4">
+                    <a href="https://www.devoxx.fr"><h1>DEVOX<span class="text-dvx-accent">X</span>
+                        <span class="text-white text-uppercase">France</span></h1>
+                    </a>
                 </div>
-                <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                    <img src="/assets/devoxx_fr_2023/robot7.png" alt="Call for Paper Devoxx France 2023">
-                </div>
-            </div>
-        </section>
-
-        <div class="container m-auto grid md:grid-cols-1 lg:grid-cols-2 lg:gap-4 md:gap-2 mb-8">
-
-            <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded mb-4">
-                <h2>Agenda</h2>
-
-                <p class="text-normal">@Messages("cfp.opening")
-                    : <span class="text-dvx-accent">@FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpOpenedOn, lang)</span> </p>
-                <p class="text-normal">@Messages("cfp.closing")
-                    : <span class="text-dvx-accent">@FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.cfpClosedOn, lang)</span></p>
-                @if(ConferenceDescriptor.isCFPOpen) {
-                    <p class="text-normal">@Messages("cfp.reminder")
-                        : <span class="text-dvx-accent">@Messages("cfp.reminder.proposals")</span> </p>
-                } else {
-                    <p class="text-normal">@Messages("cfp.reminder")
-                        : <span class="text-dvx-accent">@Messages("cfp.isClosed")</span> </p>
-                }
-                <p class="text-normal">@Messages("cfp.program") <span class="text-dvx-accent">@Messages("cfp.program.date", FormatDate.jodaFullDateFormat(ConferenceDescriptor.current().timing.scheduleAnnouncedOn, lang))</span></p>
-
-            </div>
+            </section>
 
 
-            <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded mb-4">
-                <h2>@Messages("video.title")</h2>
 
-                    <p class="font-light mb-3">@Messages("video.tag")</p>
-                    <a href="https://www.youtube.com/channel/UCsVPQfo5RZErDL41LoWvk0A" class="btn-primary" target="new">YouTube Devoxx France</a>
-
-            </div>
-
-            <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded mb-4">
-                @if(ConferenceDescriptor.isCFPOpen) {
-                    <h2>@Messages("cfp.isOpen")</h2>
-                } else {
-                    <h2>@Messages("cfp.isClosed")</h2>
-                }
-
-                <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
-                @if(ConferenceDescriptor.isCFPOpen) {
-                    <a href="@routes.Application.home()" class="btn-primary">@Messages("cfp.open.enter")</a>
-                } else {
-                    <p class="text-normal">@Messages("cfp.isClosed.expl")</p>
-                    <a href="@routes.Application.home()" class="btn-primary">@Messages("cfp.closed.enter")</a>
-                }
-                </div>
-            </div>
-
-            @if(ConferenceDescriptor.isGoldenTicketActive) {
-                <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded mb-4">
-                    <h2>@Messages("cfp.goldenTicket")</h2>
-                    <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
-                        <a href="@routes.GoldenTicketController.authenticate()" class="btn-primary">@Messages("cfp.gt.enter")</a>
+            <div class="container m-auto grid grid-cols-2 lg:gap-4 md:gap-2 mb-8">
+                <div class="grid max-w-screen-xl max-y-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+                    <div class="mr-auto place-self-center lg:col-span-7 bg-gradient-to-b p-4">
+                        <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl bg-clip-text text-transparent bg-gradient-to-b from-green-300 to-green-600">@Messages("appel.conf")</h1>
                     </div>
                 </div>
-            }
 
-            @if(ProgramSchedule.publishedProgramSchedule().exists(_.favoritesActivated)) {
-                <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded mb-4">
-                    <h2>@Messages("cfp.showAgenda.title")</h2>
-                    <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
-                        <A href="@routes.Publisher.homePublisher()" class="btn-primary" title="See the conference agenda">@Messages("cfp.showAgenda.txt")</A>
-                    </div>
+                <div>
+                    <p class="max-w-2xl mt-6 mb-6 font-light text-black-100 lg:mb-8 md:text-xl lg:text-xxl text-green-300">Changement de site - New web site</p>
+                    <p class="max-w-xl mb-6 font-light text-black-200 lg:mb-8 md:text-lg lg:text-lg">Le site du CFP de Devoxx France 2024 est hébergé sur la plate-forme Devoxx : &nbsp;https://devoxxfr2024.cfp.dev/</p>
                 </div>
-            }
+                <p class="max-w-2xl mb-6 font-light text-black-200 lg:mb-8 md:text-lg lg:text-xl text-green-600">12ème édition - du 17 au 19 avril 2024</p>
 
-            <div class="bg-dvx-box border-solid border-2 border-dvx-orange p-3 rounded md:col-span-1 lg:col-span-2">
-                <h2>@Messages("theme.title")</h2>
-                <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
-                    <p class="text-dvx-white">@Messages("theme.track")</p>
-                    <div class="overflow-x-auto relative shadow-md rounded-lg">
-                    <table class="w-full text-left text-dvx-white border-collapse border-spacing-2 border border-slate-400">
-                        <tbody>
-                        @for(track <- ConferenceDescriptor.ConferenceTracksDescription.ALL) {
-                            <tr>
-                                <td class="border border-slate-300 py-3 px-6 bg-dvx-back">@Messages(track.i18nTitleProp)</td>
-                                <td class="border border-slate-300 py-3 px-6">@Messages(track.i18nDescProp)</td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <a href="https://devoxxfr2024.cfp.dev/" class="btn-primary inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+                    <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        &nbsp;https://devoxxfr2024.cfp.dev/
+                </a>
 
-        <div class="container mx-auto bg-dvx-back p-8">
-        <div class="flex items-center justify-between text-center">
-            <span class="text-sm text-dvx-orange text-center dark:text-gray-400 mt-4 sm:mt-0">© 2012-2023 Quantixx SARL - Tous droits réservés - <a href="https://www.devoxx.fr" class="hover:underline text-dvx-accent">Devoxx France</a></span>
-            <div class="flex text-sm mt-4 space-x-6 justify-center sm:mt-0 text-dvx-orange">
-                @if(SecureCFPController.isLoggedIn(req)) {
-                    <p>Logged in as <span class="text-dvx-accent">@SecureCFPController.getCurrentUser(req).map(_.cleanName)</span></p>
-                    <p><a href="@routes.Authentication.logout" class="btn-primary">Logout</a> and close your session</p>
-                } else {
-                    <a href="@routes.Application.home()" class="btn-primary">@Messages("login")</a>
-                }
             </div>
-        </div>
-        </div>
-    </body>
-</html>
+            <section class="bg-clip-content bg-center bg-cover bg-no-repeat md:mb-8 sm:mb-2 h-[500px]" style="background-image: url('/assets/devoxxfr_2024/devoxx_france_2024_call_for_papers.png')">
+            <div class="max-w-screen-xl max-y-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+
+            </div>
+            </section>
+        </body>
+    </html>
 

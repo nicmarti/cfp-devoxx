@@ -30,19 +30,26 @@
                     @* nothing to do.. we're on a filler *@
                 } else {
                     @zeSlot.proposal.map { p: Proposal =>
+                            @defining(p.allSpeakers.map(speaker =>  s"${speaker.cleanFirstName} ${speaker.cleanLastName}").mkString(", ") ){ speakerName:String=>
+
+
                         <td class="skip-max-width-on-divs proposal">
                             <div class="content">
 
-                                <h4>@StringUtils.abbreviate(p.title, 99)</h4>
+                                @if(p.title.length+speakerName.length<100) {
+                                    <h4>@p.title - @speakerName</h4>
+                                }else {
+                                    <h4>@StringUtils.abbreviate(p.title, 99)</h4>
+                                }
                                 <h5>@Messages(p.talkType.id)</h5>
 
                                 <div class="text-sm text-left">
-                                    @if(p.title.length>99) { Titre complet : @p.title } <br>
-                                    @p.allSpeakers.map(speaker =>  s"${speaker.cleanFirstName} ${speaker.cleanLastName}").mkString(", ") <br>
+                                    @if(p.title.length>99) { ✅ Titre complet : @p.title } <br>
+                                    📣 @speakerName <br>
 
                                     <br>
                                     @Html(p.summaryAsHtml)
-                                    <p>Pour rester informé sur l'actualité de Devoxx France, suivez nous sur linkedIn : https://www.linkedin.com/in/devoxxfrance/,
+                                    <p>🔥 Pour rester informé sur l'actualité de Devoxx France, suivez nous sur linkedIn : https://www.linkedin.com/in/devoxxfrance/,
                                         twitter : https://twitter.com/DevoxxFR ou consultez notre site web https://www.devoxx.fr/</p>
                                 </div>
                                 <div class="mt-5">
@@ -53,6 +60,7 @@
                                 </div>
                             </div>
                         </td>
+                            }
                     }
                 }
             }
